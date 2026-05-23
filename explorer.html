@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chaineye Explorer, Ethereum intelligence</title>
+  <meta name="description" content="Chaineye Explorer, AI-powered Ethereum mainnet explorer with wallet intel, risk scoring, and live on-chain data.">
+  <link rel="icon" type="image/png" href="assets/8895451221__1_-a8a9bc27-5248-459d-9b3f-004c9b5141ee.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css?v=124">
+  <link rel="stylesheet" href="css/explorer.css?v=16">
+</head>
+<body class="page-explorer wallet-locked" data-reown-project-id="b56e18d47c72ab683b10814fe9495694">
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <div id="cex-wallet-gate" class="cex-wallet-gate" role="dialog" aria-modal="true" aria-labelledby="cex-wallet-gate-title">
+    <div class="cex-wallet-gate__panel">
+      <img src="assets/8895451221__1_-a8a9bc27-5248-459d-9b3f-004c9b5141ee.png" alt="" width="56" height="56" class="cex-wallet-gate__logo">
+      <p class="cex-wallet-gate__tag">// access required</p>
+      <h2 id="cex-wallet-gate-title">Connect your wallet</h2>
+      <p class="cex-wallet-gate__desc">Chaineye Explorer requires an Ethereum wallet on <strong>Mainnet</strong> before you can search addresses, view intel, and use the platform.</p>
+      <button type="button" class="cex-btn cex-wallet-gate__btn" id="cex-gate-connect">Connect Wallet</button>
+      <p class="cex-wallet-gate__error" id="cex-gate-error" hidden></p>
+      <a href="index.html" class="cex-wallet-gate__back">← Back to site</a>
+    </div>
+  </div>
+
+  <div class="cex-app" id="cex-app" aria-hidden="true" inert>
+    <header class="cex-header">
+      <div class="cex-header__left">
+        <button type="button" class="cex-menu-btn" id="cex-menu-btn" aria-label="Open menu" aria-expanded="false">☰</button>
+        <a href="index.html" class="cex-logo" title="Back to Chaineye AI">
+          <img src="assets/8895451221__1_-a8a9bc27-5248-459d-9b3f-004c9b5141ee.png" alt="" width="32" height="32">
+          <span class="cex-logo__text">CHAINEYE <span class="cex-logo__sub">Explorer</span></span>
+        </a>
+        <span class="cex-network">
+          <span class="cex-pulse" aria-hidden="true"></span>
+          Ethereum Mainnet
+        </span>
+      </div>
+
+      <form class="cex-search-form" id="cex-search-form" role="search">
+        <label class="sr-only" for="cex-search-input">Search</label>
+        <span class="cex-search-form__icon" aria-hidden="true">⌕</span>
+        <input
+          type="search"
+          id="cex-search-input"
+          class="cex-search-form__input"
+          placeholder="Address / Txn Hash / Block / Token"
+          autocomplete="off"
+          spellcheck="false"
+        >
+        <kbd class="cex-search-form__kbd">/</kbd>
+      </form>
+
+      <div class="cex-header__right">
+        <div class="cex-ticker-stats" aria-label="Network stats">
+          <span>ETH <strong id="cex-eth-price">$2,131.42</strong> <em class="cex-up">+1.27%</em></span>
+          <span class="cex-stat-sep">·</span>
+          <span>Gas <strong id="cex-gas">0.28</strong> Gwei</span>
+          <span class="cex-stat-sep">·</span>
+          <span>Block <strong id="cex-head-block">21,492,847</strong></span>
+        </div>
+        <button type="button" class="cex-btn cex-btn--ghost" id="cex-connect-btn">Connect Wallet</button>
+      </div>
+    </header>
+
+    <div class="cex-shell">
+      <aside class="cex-sidebar" aria-label="Explorer navigation">
+        <nav class="cex-nav">
+          <p class="cex-nav__label">Explore</p>
+          <a href="#/" class="cex-nav__item is-active" data-view="dashboard">
+            <span class="cex-nav__icon" aria-hidden="true">◈</span> Dashboard
+          </a>
+          <a href="#/blocks" class="cex-nav__item" data-view="blocks">
+            <span class="cex-nav__icon" aria-hidden="true">▣</span> Blocks
+          </a>
+          <a href="#/txs" class="cex-nav__item" data-view="txs">
+            <span class="cex-nav__icon" aria-hidden="true">⇄</span> Transactions
+          </a>
+          <p class="cex-nav__label">Intelligence</p>
+          <a href="#/intel" class="cex-nav__item" data-view="intel">
+            <span class="cex-nav__icon cex-nav__icon--ai" aria-hidden="true">◉</span> AI Intel Feed
+          </a>
+          <a href="#/news" class="cex-nav__item" data-view="news">
+            <span class="cex-nav__icon" aria-hidden="true">⬡</span> On-Chain News
+          </a>
+        </nav>
+        <div class="cex-sidebar__foot">
+          <p class="cex-wallet-badge" id="cex-wallet-status"><span class="cex-pulse"></span> Wallet required</p>
+          <p class="cex-sidebar__note">Connect your Ethereum Mainnet wallet to use the explorer.</p>
+          <div class="cex-sidebar-social nav-social" aria-label="Social links">
+            <a href="https://t.me/ChaineyeAI" class="nav-social-link" target="_blank" rel="noopener noreferrer" aria-label="Telegram">
+              <svg class="nav-social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+            </a>
+            <a href="https://x.com/ChaineyeAI" class="nav-social-link" target="_blank" rel="noopener noreferrer" aria-label="X">
+              <svg class="nav-social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+          </div>
+          <a href="index.html" class="cex-link-back">← Back to site</a>
+        </div>
+      </aside>
+
+      <main class="cex-main" id="cex-main">
+        <div class="cex-toast" id="cex-toast" role="status" aria-live="polite" hidden></div>
+
+        <!-- Dashboard -->
+        <section class="cex-view is-active" id="view-dashboard" data-view="dashboard">
+          <header class="cex-page-head">
+            <div>
+              <p class="cex-page-tag">// dashboard</p>
+              <h1>Mainnet pulse</h1>
+              <p class="cex-page-desc">Live-style feed of blocks, transactions, and AI intel, Chaineye explorer home.</p>
+            </div>
+            <div class="cex-sync-pill"><span class="cex-pulse"></span> Synced · 12ms latency</div>
+          </header>
+
+          <div class="cex-stat-row">
+            <article class="cex-stat-card">
+              <span class="cex-stat-card__label">Latest block</span>
+              <span class="cex-stat-card__value" id="dash-block">21,492,847</span>
+              <span class="cex-stat-card__meta">+1 every ~12s</span>
+            </article>
+            <article class="cex-stat-card">
+              <span class="cex-stat-card__label">Pending txs</span>
+              <span class="cex-stat-card__value">142,891</span>
+              <span class="cex-stat-card__meta">Mempool estimate</span>
+            </article>
+            <article class="cex-stat-card">
+              <span class="cex-stat-card__label">AI scans (24h)</span>
+              <span class="cex-stat-card__value cex-stat-card__value--accent">28,412</span>
+              <span class="cex-stat-card__meta">Wallets + contracts</span>
+            </article>
+            <article class="cex-stat-card">
+              <span class="cex-stat-card__label">Active alerts</span>
+              <span class="cex-stat-card__value">37</span>
+              <span class="cex-stat-card__meta">MEV · liquidity · risk</span>
+            </article>
+          </div>
+
+          <div class="cex-dash-grid">
+            <div class="cex-panel cex-dash-card">
+              <div class="cex-panel__head">
+                <h2>Latest blocks</h2>
+                <a href="#/blocks" class="cex-panel__link" data-nav="blocks">View all</a>
+              </div>
+              <div class="cex-table-wrap cex-dash-card__body">
+                <table class="cex-table">
+                  <thead>
+                    <tr>
+                      <th>Block</th>
+                      <th>Age</th>
+                      <th>Txn</th>
+                      <th>Miner</th>
+                      <th>Gas</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dash-blocks-body"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="cex-panel cex-dash-card">
+              <div class="cex-panel__head">
+                <h2>Latest transactions</h2>
+                <a href="#/txs" class="cex-panel__link" data-nav="txs">View all</a>
+              </div>
+              <div class="cex-table-wrap cex-dash-card__body">
+                <table class="cex-table cex-table--tx">
+                  <thead>
+                    <tr>
+                      <th>Txn Hash</th>
+                      <th>Method</th>
+                      <th>Block</th>
+                      <th>From</th>
+                      <th>To</th>
+                      <th>Value</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dash-txs-body"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <aside class="cex-intel-feed cex-dash-card">
+              <div class="cex-panel__head">
+                <h2>AI intel feed</h2>
+                <span class="cex-live-tag"><span class="cex-pulse"></span> Live</span>
+              </div>
+              <ul class="cex-intel-list cex-dash-card__body" id="cex-intel-feed"></ul>
+            </aside>
+          </div>
+        </section>
+
+        <!-- Address -->
+        <section class="cex-view" id="view-address" data-view="address" hidden>
+          <nav class="cex-breadcrumb" aria-label="Breadcrumb">
+            <a href="#/" data-nav="dashboard">Dashboard</a>
+            <span>/</span>
+            <span>Address</span>
+          </nav>
+
+          <header class="cex-address-hero">
+            <div class="cex-address-hero__main">
+              <div class="cex-identicon" id="cex-identicon" aria-hidden="true"></div>
+              <div class="cex-address-hero__body">
+                <p class="cex-address-hero__type">Contract / Address</p>
+                <div class="cex-address-hero__hash-row">
+                  <h1 class="cex-address-hero__hash" id="cex-address-hash">0x4838Bdf1E78775f97…</h1>
+                  <button type="button" class="cex-icon-action" id="cex-copy-address" title="Copy address">⎘</button>
+                  <button type="button" class="cex-icon-action" title="Add to watchlist">★</button>
+                </div>
+                <div class="cex-tags" id="cex-address-tags"></div>
+              </div>
+            </div>
+            <div class="cex-risk-card">
+              <div class="cex-risk-ring" id="cex-risk-ring" style="--risk: 72">
+                <span class="cex-risk-ring__value" id="cex-risk-score">72</span>
+              </div>
+              <div>
+                <p class="cex-risk-card__label">AI risk score</p>
+                <p class="cex-risk-card__tier" id="cex-risk-tier">Low–Medium</p>
+                <p class="cex-risk-card__hint">Multi-agent contract + flow analysis</p>
+              </div>
+            </div>
+          </header>
+
+          <div class="cex-address-cards">
+            <article class="cex-info-card">
+              <h3>Overview</h3>
+              <dl class="cex-kv">
+                <div><dt>ETH Balance</dt><dd class="cex-mono" id="cex-balance-eth">8.07 ETH</dd></div>
+                <div><dt>ETH Value</dt><dd id="cex-balance-usd">$17,182 <span class="cex-muted">USD</span></dd></div>
+                <div><dt>Token Holdings</dt><dd><span class="cex-pill">24 tokens</span> <span class="cex-muted">· $12,112</span></dd></div>
+              </dl>
+            </article>
+            <article class="cex-info-card">
+              <h3>Activity</h3>
+              <dl class="cex-kv">
+                <div><dt>Latest Txn</dt><dd class="cex-mono">1 min ago</dd></div>
+                <div><dt>First seen</dt><dd class="cex-mono">412 days ago</dd></div>
+                <div><dt>Funded by</dt><dd><a href="#" class="cex-link cex-link-addr" data-preset-addr>Binance 15</a></dd></div>
+              </dl>
+            </article>
+            <article class="cex-info-card cex-info-card--intel">
+              <h3>Intel summary</h3>
+              <p class="cex-intel-value" id="cex-portfolio-val">$29,294.32</p>
+              <p class="cex-muted">Portfolio · 4 clusters · mainnet</p>
+              <div class="cex-intel-chips">
+                <span>Flows tracked</span>
+                <span>Risk monitored</span>
+                <span>3 alerts</span>
+              </div>
+            </article>
+          </div>
+
+          <div class="cex-tabs" role="tablist" aria-label="Address data">
+            <button type="button" class="cex-tab is-active" role="tab" aria-selected="true" data-tab="txs">Transactions</button>
+            <button type="button" class="cex-tab" role="tab" data-tab="internal">Internal</button>
+            <button type="button" class="cex-tab" role="tab" data-tab="tokens">Token Transfers</button>
+            <button type="button" class="cex-tab" role="tab" data-tab="analytics">AI Analytics</button>
+          </div>
+
+          <div class="cex-tab-panels">
+            <div class="cex-tab-panel is-active" data-panel="txs">
+              <div class="cex-table-wrap">
+                <table class="cex-table cex-table--tx cex-table--full">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Txn Hash</th>
+                      <th>Method</th>
+                      <th>Block</th>
+                      <th>Age</th>
+                      <th>From</th>
+                      <th>To</th>
+                      <th>Value</th>
+                      <th>Fee</th>
+                    </tr>
+                  </thead>
+                  <tbody id="cex-address-txs"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="cex-tab-panel" data-panel="internal" hidden>
+              <p class="cex-empty">No internal transactions found.</p>
+            </div>
+            <div class="cex-tab-panel" data-panel="tokens" hidden>
+              <div class="cex-token-list">
+                <div class="cex-token-row"><span class="cex-token-sym">USDC</span><span class="cex-mono">142,891.22</span><span class="cex-muted">$142,891</span></div>
+                <div class="cex-token-row"><span class="cex-token-sym">WETH</span><span class="cex-mono">2.41</span><span class="cex-muted">$5,142</span></div>
+                <div class="cex-token-row"><span class="cex-token-sym">LINK</span><span class="cex-mono">890.0</span><span class="cex-muted">$12,840</span></div>
+              </div>
+            </div>
+            <div class="cex-tab-panel" data-panel="analytics" hidden>
+              <div class="cex-analytics-grid">
+                <div class="cex-analytics-card">
+                  <h4>Flow clusters</h4>
+                  <p>4 wallet clusters linked in last 30d, 2 flagged for review.</p>
+                </div>
+                <div class="cex-analytics-card">
+                  <h4>MEV exposure</h4>
+                  <p>Moderate, 12% of outbound volume routed via builder relays.</p>
+                </div>
+                <div class="cex-analytics-card">
+                  <h4>Contract interactions</h4>
+                  <p>38 unique contracts · 2 proxy upgrades detected.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Blocks list -->
+        <section class="cex-view" id="view-blocks" data-view="blocks" hidden>
+          <header class="cex-page-head">
+            <div>
+              <p class="cex-page-tag">// blocks</p>
+              <h1>Block explorer</h1>
+              <p class="cex-page-desc">Recent Ethereum mainnet blocks.</p>
+            </div>
+          </header>
+          <div class="cex-panel">
+            <div class="cex-table-wrap">
+              <table class="cex-table">
+                <thead>
+                  <tr>
+                    <th>Block</th>
+                    <th>Age</th>
+                    <th>Txn</th>
+                    <th>Reward</th>
+                    <th>Miner</th>
+                    <th>Gas Used</th>
+                  </tr>
+                </thead>
+                <tbody id="cex-blocks-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- All txs -->
+        <section class="cex-view" id="view-txs" data-view="txs" hidden>
+          <header class="cex-page-head">
+            <div>
+              <p class="cex-page-tag">// transactions</p>
+              <h1>Transaction stream</h1>
+              <p class="cex-page-desc">Latest mainnet transactions with method decoding preview.</p>
+            </div>
+          </header>
+          <div class="cex-panel">
+            <div class="cex-table-wrap">
+              <table class="cex-table cex-table--tx cex-table--full">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Txn Hash</th>
+                    <th>Method</th>
+                    <th>Block</th>
+                    <th>Age</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody id="cex-txs-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- On-chain news -->
+        <section class="cex-view" id="view-news" data-view="news" hidden>
+          <header class="cex-page-head">
+            <div>
+              <p class="cex-page-tag">// on-chain news</p>
+              <h1>Signal map &amp; news feed</h1>
+              <p class="cex-page-desc">Track wallet flows, protocol deposits, and AI-generated trade ideas derived from live mainnet activity.</p>
+            </div>
+            <div class="cex-sync-pill"><span class="cex-pulse"></span> <span id="cex-news-count">8</span> signals · live</div>
+          </header>
+
+          <div class="cex-news-layout">
+            <div class="cex-panel cex-news-map-panel">
+              <div class="cex-panel__head">
+                <h2>Flow map</h2>
+                <span class="cex-live-tag"><span class="cex-pulse"></span> Mainnet routes</span>
+              </div>
+              <div class="cex-news-map-wrap" id="cex-news-map-wrap" role="img" aria-label="On-chain flow map">
+                <svg class="cex-news-map" id="cex-news-map" viewBox="0 0 800 420" preserveAspectRatio="xMidYMid meet"></svg>
+                <div class="cex-news-map__hub" aria-hidden="true">
+                  <span class="cex-news-map__hub-dot"></span>
+                  <span class="cex-news-map__hub-label">Ethereum Mainnet</span>
+                </div>
+              </div>
+              <p class="cex-news-map__hint" id="cex-news-map-hint">Select a headline to highlight the route on the map.</p>
+            </div>
+
+            <div class="cex-panel cex-news-feed-panel">
+              <div class="cex-panel__head">
+                <h2>News feed</h2>
+                <button type="button" class="cex-btn cex-btn--ghost cex-btn--sm" id="cex-news-refresh">Refresh</button>
+              </div>
+              <ul class="cex-news-list" id="cex-news-feed-list"></ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Intel feed page -->
+        <section class="cex-view" id="view-intel" data-view="intel" hidden>
+          <header class="cex-page-head">
+            <div>
+              <p class="cex-page-tag">// ai intel</p>
+              <h1>Intelligence feed</h1>
+              <p class="cex-page-desc">Chaineye AI signals, wallet flows, contract risk, and live alerts.</p>
+            </div>
+            <div class="cex-sync-pill"><span class="cex-pulse"></span> 37 active alerts</div>
+          </header>
+          <ul class="cex-intel-page-list" id="cex-intel-page-list"></ul>
+        </section>
+
+        <!-- Tx detail -->
+        <section class="cex-view" id="view-tx" data-view="tx" hidden>
+          <nav class="cex-breadcrumb">
+            <a href="#/" data-nav="dashboard">Dashboard</a>
+            <span>/</span>
+            <span>Transaction</span>
+          </nav>
+          <header class="cex-page-head">
+            <div>
+              <p class="cex-page-tag">// transaction</p>
+              <h1 class="cex-mono cex-tx-title" id="cex-tx-hash-title">-</h1>
+            </div>
+            <span class="cex-status cex-status--ok" id="cex-tx-status">Success</span>
+          </header>
+          <div class="cex-detail-grid" id="cex-tx-detail"></div>
+        </section>
+
+        <!-- Block detail -->
+        <section class="cex-view" id="view-block" data-view="block" hidden>
+          <nav class="cex-breadcrumb">
+            <a href="#/blocks" data-nav="blocks">Blocks</a>
+            <span>/</span>
+            <span>Block</span>
+          </nav>
+          <header class="cex-page-head">
+            <div>
+              <p class="cex-page-tag">// block</p>
+              <h1 id="cex-block-title">Block -</h1>
+            </div>
+          </header>
+          <div class="cex-detail-grid" id="cex-block-detail"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script type="module" src="js/explorer.bundle.js?v=11"></script>
+</body>
+</html>

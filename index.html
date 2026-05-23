@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>Chaineye AI, See Blockchain Smarter</title>
+  <meta name="description" content="Chaineye AI, AI-powered blockchain intelligence for Ethereum mainnet. See Blockchain Smarter.">
+  <link rel="icon" type="image/png" href="assets/8895451221__1_-a8a9bc27-5248-459d-9b3f-004c9b5141ee.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css?v=133" id="main-css">
+  <style id="neuro-critical">
+    .page-home .hero { overflow: hidden !important; position: relative !important; }
+    .page-home .hero-neuro {
+      position: absolute !important; inset: 0 !important; z-index: 2 !important;
+      pointer-events: none !important; overflow: hidden !important;
+    }
+    .page-home .hero-neuro canvas#neuro {
+      display: block !important; position: absolute !important;
+      top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important;
+      z-index: 1 !important; opacity: 1 !important;
+      filter: brightness(1.12) saturate(1.08) !important;
+      mix-blend-mode: normal !important;
+    }
+    .page-home .hero .hero-glow { display: none !important; }
+    .page-home .hero .container.hero-grid {
+      position: absolute !important; inset: 0 !important; z-index: 10 !important;
+    }
+    .page-home .hero-switch-overlay { z-index: 4 !important; }
+  </style>
+  <script type="x-shader/x-vertex" id="vertShader">
+    precision mediump float;
+    varying vec2 vUv;
+    attribute vec2 a_position;
+    void main() {
+        vUv = .5 * (a_position + 1.);
+        gl_Position = vec4(a_position, 0.0, 1.0);
+    }
+  </script>
+  <script type="x-shader/x-fragment" id="fragShader">
+    #ifdef GL_FRAGMENT_PRECISION_HIGH
+    precision highp float;
+    #else
+    precision mediump float;
+    #endif
+    varying vec2 vUv;
+    uniform float u_time;
+    uniform float u_ratio;
+    uniform vec2 u_pointer_position;
+    vec2 rotate(vec2 uv, float th) {
+        return mat2(cos(th), sin(th), -sin(th), cos(th)) * uv;
+    }
+    float neuro_shape(vec2 uv, float t, float p) {
+        vec2 sine_acc = vec2(0.);
+        vec2 res = vec2(0.);
+        float scale = 8.;
+        for (int j = 0; j < 15; j++) {
+            uv = rotate(uv, 1.);
+            sine_acc = rotate(sine_acc, 1.);
+            vec2 layer = uv * scale + float(j) + sine_acc - t;
+            sine_acc += sin(layer);
+            res += (.5 + .5 * cos(layer)) / scale;
+            scale *= (1.2 - .07 * p);
+        }
+        return res.x + res.y;
+    }
+    void main() {
+        vec2 uv = .5 * vUv;
+        uv.x *= u_ratio;
+        vec2 pointer = vUv - u_pointer_position;
+        pointer.x *= u_ratio;
+        float p = clamp(length(pointer), 0., 1.);
+        p = .5 * pow(1. - p, 2.);
+        float t = .0005 * u_time;
+        float raw = neuro_shape(uv, t, p);
+        float noise = 1.35 * pow(raw, 3.);
+        noise += pow(raw, 10.);
+        noise = max(.0, noise - .36);
+
+        float edgeX = smoothstep(0.06, 0.78, abs(vUv.x - 0.5) * 2.0);
+        float softCenter = 1.0 - length(vUv - vec2(0.5, 0.42)) * 0.52;
+        float vignette = edgeX * clamp(softCenter, 0.38, 1.0);
+        float intensity = noise * vignette;
+
+        vec3 deep = vec3(0.02, 0.14, 0.08);
+        vec3 emerald = vec3(0.0, 0.55, 0.3);
+        vec3 neon = vec3(0.12, 1.0, 0.58);
+        vec3 mint = vec3(0.9, 1.0, 0.95);
+
+        vec3 color = mix(deep, emerald, smoothstep(0.0, 0.2, intensity));
+        color = mix(color, neon, smoothstep(0.08, 0.5, intensity));
+        color = mix(color, mint, smoothstep(0.38, 1.0, intensity));
+
+        float bloom = smoothstep(0.34, 1.0, intensity) * 0.34;
+        color += mint * bloom;
+
+        float alpha = clamp(intensity * 1.28 + bloom * 0.58, 0.0, 1.0);
+        gl_FragColor = vec4(color, alpha);
+    }
+  </script>
+</head>
+<body class="page-home">
+
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="container nav">
+      <a href="#" class="logo">
+        <img src="assets/8895451221__1_-a8a9bc27-5248-459d-9b3f-004c9b5141ee.png" alt="Chaineye AI" width="36" height="36">
+        CHAINEYE AI
+      </a>
+      <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-end">
+        <nav class="nav-links" aria-label="Primary">
+          <a href="#about">About</a>
+          <a href="#how-it-works">How It Works</a>
+          <a href="#features">Features</a>
+          <a href="#roadmap">Roadmap</a>
+          <a href="#capabilities">Capabilities</a>
+          <a href="#tokenomics">Tokenomics</a>
+          <a href="explorer.html#/" class="about-explorer-link hero-explorer-link nav-explorer-link">Explorer →</a>
+        </nav>
+        <div class="nav-social" aria-label="Social links">
+          <a href="https://t.me/ChaineyeAI" class="nav-social-link" target="_blank" rel="noopener noreferrer" aria-label="Telegram">
+            <svg class="nav-social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+          </a>
+          <a href="https://x.com/ChaineyeAI" class="nav-social-link" target="_blank" rel="noopener noreferrer" aria-label="X">
+            <svg class="nav-social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="section hero" aria-label="Hero">
+      <div class="hero-neuro" aria-hidden="true">
+        <canvas id="neuro"></canvas>
+      </div>
+      <div class="hero-glow" aria-hidden="true"></div>
+
+      <div class="container hero-grid">
+        <div class="hero-title-wrap reveal">
+          <h1 class="hero-title">
+            <span class="hero-title-primary">CHAINEYE AI</span>
+            <span class="hero-title-secondary">See Blockchain Smarter</span>
+          </h1>
+          <div class="hero-logo-spin">
+            <img src="assets/8895451221__1_-a8a9bc27-5248-459d-9b3f-004c9b5141ee.png" alt="Chaineye AI logo" width="200" height="200">
+          </div>
+          <div class="hero-cta">
+            <a href="#about" class="hero-scroll-arrow" aria-label="Scroll to About">
+              <span class="hero-scroll-arrow-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 5v14M5 12l7 7 7-7"/>
+                </svg>
+              </span>
+            </a>
+            <a href="explorer.html#/" class="about-explorer-link hero-explorer-link">Explorer →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-switch-overlay" aria-hidden="true"></div>
+    </section>
+
+    <div class="section-switch-overlay" aria-hidden="true"></div>
+
+    <!-- About -->
+    <section id="about" class="section about">
+      <div class="about-bg" aria-hidden="true"></div>
+      <div class="container about-wrap">
+        <header class="about-intro reveal">
+          <p class="section-tag">// about Chaineye AI</p>
+          <h2 class="about-title-gradient">The next-gen intelligence layer for Ethereum</h2>
+          <p class="about-lead">Chaineye AI ingests live on-chain data from Ethereum mainnet, runs it through multi-agent AI pipelines, and delivers actionable intelligence, wallet flows, contract risk, and real-time alerts in one unified view.</p>
+        </header>
+
+        <figure class="about-preview reveal">
+          <div class="about-preview__frame">
+            <div class="about-preview__viewport">
+              <div class="about-preview__track">
+                <img
+                  src="assets/chaineye-explorer-dashboard.png?v=2"
+                  alt="Chaineye Explorer dashboard with mainnet pulse stats, latest blocks, transactions, and AI intel feed"
+                  width="1920"
+                  height="1080"
+                  loading="lazy"
+                  decoding="async"
+                >
+                <img
+                  src="assets/chaineye-explorer-dashboard.png?v=2"
+                  alt=""
+                  width="1920"
+                  height="1080"
+                  loading="lazy"
+                  decoding="async"
+                  aria-hidden="true"
+                >
+              </div>
+            </div>
+            <span class="about-preview__fade about-preview__fade--top" aria-hidden="true"></span>
+            <span class="about-preview__fade about-preview__fade--bottom" aria-hidden="true"></span>
+          </div>
+          <figcaption class="about-preview__caption">
+            <a href="explorer.html#/" class="about-explorer-link">Chaineye Explorer, live mainnet dashboard →</a>
+          </figcaption>
+        </figure>
+
+        <div class="about-pillars reveal">
+          <article class="about-pillar">
+            <p class="about-pillar__tag">Focus</p>
+            <h3>Ethereum Mainnet</h3>
+            <p>Blocks, transactions, and wallet signals from mainnet, unified in one live intelligence layer.</p>
+          </article>
+          <article class="about-pillar">
+            <p class="about-pillar__tag">Engine</p>
+            <h3>Multi-Agent AI</h3>
+            <p>Parallel agents parse, correlate, and score on-chain activity before you act on it.</p>
+          </article>
+          <article class="about-pillar">
+            <p class="about-pillar__tag">Output</p>
+            <h3>Actionable Intel</h3>
+            <p>Flows, contract risk, and alerts surfaced in clear, operator-ready readouts.</p>
+          </article>
+        </div>
+
+        <div class="about-capabilities reveal">
+          <header class="about-capabilities__head">
+            <h3 class="about-capabilities__title">Platform Capabilities</h3>
+          </header>
+          <div class="about-capabilities__grid">
+            <article class="about-cap-card about-cap-card--has-visual">
+              <span class="about-cap-card__num">01</span>
+              <h4 class="about-cap-card__title">Wallet &amp; flow tracking</h4>
+              <p class="about-cap-card__text">Trace wallet clusters, inflows, and suspicious routing across addresses in real time. See how capital moves between entities before price or liquidity reacts on-chain.</p>
+              <div class="about-cap-card__visual">
+                <div class="about-cap-card__viewport">
+                  <div class="about-cap-card__track">
+                    <img
+                      src="assets/chaineye-latest-transactions.png"
+                      alt="Chaineye Explorer latest transactions table with txn hash, method, block, from, to, and value"
+                      width="800"
+                      height="400"
+                      loading="lazy"
+                      decoding="async"
+                    >
+                    <img
+                      src="assets/chaineye-latest-transactions.png"
+                      alt=""
+                      width="800"
+                      height="400"
+                      loading="lazy"
+                      decoding="async"
+                      aria-hidden="true"
+                    >
+                  </div>
+                </div>
+                <span class="about-cap-card__fade about-cap-card__fade--top" aria-hidden="true"></span>
+                <span class="about-cap-card__fade about-cap-card__fade--bottom" aria-hidden="true"></span>
+              </div>
+            </article>
+            <article class="about-cap-card about-cap-card--has-visual">
+              <span class="about-cap-card__num">02</span>
+              <h4 class="about-cap-card__title">Contract risk scoring</h4>
+              <p class="about-cap-card__text">AI-assisted scans flag honeypots, proxy patterns, and abnormal bytecode before you interact. Each address gets a clear risk tier you can trust at a glance.</p>
+              <div class="about-cap-card__visual">
+                <div class="about-cap-card__viewport">
+                  <div class="about-cap-card__track">
+                    <img
+                      src="assets/chaineye-latest-blocks.png?v=2"
+                      alt="Chaineye Explorer latest blocks table with block height, age, transactions, miner, and gas"
+                      width="800"
+                      height="400"
+                      loading="lazy"
+                      decoding="async"
+                    >
+                    <img
+                      src="assets/chaineye-latest-blocks.png?v=2"
+                      alt=""
+                      width="800"
+                      height="400"
+                      loading="lazy"
+                      decoding="async"
+                      aria-hidden="true"
+                    >
+                  </div>
+                </div>
+                <span class="about-cap-card__fade about-cap-card__fade--top" aria-hidden="true"></span>
+                <span class="about-cap-card__fade about-cap-card__fade--bottom" aria-hidden="true"></span>
+              </div>
+            </article>
+            <article class="about-cap-card about-cap-card--has-visual">
+              <span class="about-cap-card__num">03</span>
+              <h4 class="about-cap-card__title">Live alert engine</h4>
+              <p class="about-cap-card__text">MEV activity, liquidity shifts, and anomalies are surfaced before they escalate. Configure watchlists and get intel when mainnet behavior deviates from the norm.</p>
+              <div class="about-cap-card__visual">
+                <div class="about-cap-card__viewport">
+                  <div class="about-cap-card__track">
+                    <img
+                      src="assets/chaineye-ai-intel-feed.png?v=2"
+                      alt="Chaineye Explorer AI intel feed showing live flow, risk, and MEV alerts"
+                      width="800"
+                      height="400"
+                      loading="lazy"
+                      decoding="async"
+                    >
+                    <img
+                      src="assets/chaineye-ai-intel-feed.png?v=2"
+                      alt=""
+                      width="800"
+                      height="400"
+                      loading="lazy"
+                      decoding="async"
+                      aria-hidden="true"
+                    >
+                  </div>
+                </div>
+                <span class="about-cap-card__fade about-cap-card__fade--top" aria-hidden="true"></span>
+                <span class="about-cap-card__fade about-cap-card__fade--bottom" aria-hidden="true"></span>
+              </div>
+            </article>
+            <article class="about-cap-card about-cap-card--has-visual">
+              <span class="about-cap-card__num">04</span>
+              <h4 class="about-cap-card__title">On-chain news feed</h4>
+              <p class="about-cap-card__text">A signal map and live news stream turn raw mainnet events into readable headlines: whale transfers to perp venues, bridge flows, liquidations, and DEX rotations. Each item includes AI context and optional trade ideas so you can connect on-chain activity to your next move.</p>
+              <div class="about-cap-card__visual">
+                <div class="about-cap-card__viewport">
+                  <div class="about-cap-card__track">
+                    <img
+                      src="assets/chaineye-on-chain-news.png?v=2"
+                      alt="Chaineye Explorer on-chain news: flow map with wallet routes and AI trade ideas feed"
+                      width="800"
+                      height="400"
+                      loading="lazy"
+                      decoding="async"
+                    >
+                    <img
+                      src="assets/chaineye-on-chain-news.png?v=2"
+                      alt=""
+                      width="800"
+                      height="400"
+                      loading="lazy"
+                      decoding="async"
+                      aria-hidden="true"
+                    >
+                  </div>
+                </div>
+                <span class="about-cap-card__fade about-cap-card__fade--top" aria-hidden="true"></span>
+                <span class="about-cap-card__fade about-cap-card__fade--bottom" aria-hidden="true"></span>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="section how-it-works">
+      <div class="container">
+        <header class="section-head center">
+          <p class="section-tag">// how it works</p>
+          <h2>From Ethereum raw data to live intel</h2>
+          <p class="section-desc">Enable on-chain feeds and follow signals through ingest, AI processing, and live outputs, a real-time view of how Chaineye turns mainnet data into action.</p>
+        </header>
+
+        <div class="hiw-flow-panel reveal" aria-label="Mainnet data flows through ingest, AI, and live outputs">
+          <div class="hiw-flow-panel__bg" aria-hidden="true">
+            <span class="hiw-flow-panel__glow"></span>
+          </div>
+          <header class="hiw-flow-panel__bar">
+            <span class="hiw-flow-panel__tag">// neural pipeline</span>
+            <span class="hiw-flow-panel__live"><span class="pulse-dot" aria-hidden="true"></span> Signal active</span>
+          </header>
+          <ol class="hiw-flow">
+            <li class="hiw-step">
+              <span class="hiw-step__num">01</span>
+              <span class="hiw-step__icon-wrap">
+                <span class="hiw-step__ring" aria-hidden="true"></span>
+                <span class="hiw-step__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v4c0 3.3 3.6 6 8 6s8-2.7 8-6V6"/><path d="M4 14v4c0 3.3 3.6 6 8 6s8-2.7 8-6v-4"/></svg>
+                </span>
+              </span>
+              <span class="hiw-step__title">Mainnet</span>
+              <span class="hiw-step__hint">Raw on-chain data</span>
+            </li>
+            <li class="hiw-connector" aria-hidden="true"><span class="hiw-connector__beam"></span></li>
+            <li class="hiw-step">
+              <span class="hiw-step__num">02</span>
+              <span class="hiw-step__icon-wrap">
+                <span class="hiw-step__ring" aria-hidden="true"></span>
+                <span class="hiw-step__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v12"/><path d="M8 11l4 4 4-4"/><path d="M5 21h14"/></svg>
+                </span>
+              </span>
+              <span class="hiw-step__title">Ingest</span>
+              <span class="hiw-step__hint">Stream &amp; normalize</span>
+            </li>
+            <li class="hiw-connector" aria-hidden="true"><span class="hiw-connector__beam"></span></li>
+            <li class="hiw-step hiw-step--core">
+              <span class="hiw-step__num">03</span>
+              <span class="hiw-step__icon-wrap">
+                <span class="hiw-step__ring hiw-step__ring--pulse" aria-hidden="true"></span>
+                <span class="hiw-step__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h2v2H9zM13 9h2v2h-2zM9 13h2v2H9zM13 13h6v2h-6z"/></svg>
+                </span>
+              </span>
+              <span class="hiw-step__title">AI Core</span>
+              <span class="hiw-step__hint">Score &amp; classify</span>
+            </li>
+            <li class="hiw-connector" aria-hidden="true"><span class="hiw-connector__beam"></span></li>
+            <li class="hiw-step">
+              <span class="hiw-step__num">04</span>
+              <span class="hiw-step__icon-wrap">
+                <span class="hiw-step__ring" aria-hidden="true"></span>
+                <span class="hiw-step__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/></svg>
+                </span>
+              </span>
+              <span class="hiw-step__title">Live Intel</span>
+              <span class="hiw-step__hint">Alerts &amp; insights</span>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="section features">
+      <div class="container">
+        <header class="section-head center">
+          <p class="section-tag">// features</p>
+          <h2>Everything you need on mainnet</h2>
+          <p class="section-desc">Six core modules that turn raw Ethereum data into live, actionable intelligence, built for traders, researchers, and on-chain operators.</p>
+        </header>
+
+        <div class="features-grid">
+          <article class="feature-card">
+            <div class="feature-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 12h16M12 4v16"/><circle cx="12" cy="12" r="3"/></svg>
+            </div>
+            <h3>Real-Time Mainnet Feeds</h3>
+            <p>Live blocks, transactions, and mempool-adjacent signals streamed directly from Ethereum mainnet.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 17l4-4 4 4 6-8 4 4"/></svg>
+            </div>
+            <h3>Wallet Flow Intelligence</h3>
+            <p>Trace wallet clusters, inflows, and suspicious routing patterns across addresses in real time.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"/></svg>
+            </div>
+            <h3>Contract Risk Scoring</h3>
+            <p>AI-assisted scans for honeypots, proxy patterns, and abnormal bytecode before you interact.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="12" r="2.5"/><circle cx="16" cy="8" r="2.5"/><circle cx="16" cy="16" r="2.5"/><path d="M10.5 12h3M14 9.5v3M14 14.5v-3"/></svg>
+            </div>
+            <h3>Multi-Agent AI Core</h3>
+            <p>Parallel agents parse, correlate, and merge on-chain signals into unified intelligence reports.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+            </div>
+            <h3>Live Alert Engine</h3>
+            <p>MEV activity, liquidity shifts, and anomaly alerts delivered before situations escalate.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h10M4 18h14"/><circle cx="18" cy="18" r="3"/></svg>
+            </div>
+            <h3>On-Chain News Feed</h3>
+            <p>Signal map and live headlines from mainnet: whale flows, bridge moves, and AI trade ideas in one stream.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Roadmap -->
+    <section id="roadmap" class="section roadmap">
+      <div class="container">
+        <header class="section-head center">
+          <p class="section-tag">// roadmap</p>
+          <h2>Building toward full<br>mainnet intelligence</h2>
+          <p class="section-desc">Four release phases from core feeds to advanced automation. Each version adds depth without sacrificing clarity.</p>
+        </header>
+
+        <div class="roadmap-panel reveal">
+          <div class="roadmap-panel__bg" aria-hidden="true">
+            <span class="roadmap-panel__glow"></span>
+          </div>
+          <header class="roadmap-panel__bar">
+            <span class="roadmap-panel__tag">// release timeline</span>
+            <span class="roadmap-panel__meta"><span class="pulse-dot" aria-hidden="true"></span> v1 active · 4 phases</span>
+          </header>
+
+          <ol class="roadmap-grid">
+            <li class="roadmap-phase roadmap-phase--current">
+              <div class="roadmap-phase__head">
+                <span class="roadmap-phase__node" aria-hidden="true"><span class="roadmap-phase__node-core"></span></span>
+              </div>
+              <article class="roadmap-phase__card">
+                <div class="roadmap-phase__top">
+                  <span class="roadmap-phase__badge">v1</span>
+                  <span class="roadmap-phase__status">Active</span>
+                </div>
+                <h3 class="roadmap-phase__title">Foundation</h3>
+                <ul class="roadmap-phase__list">
+                  <li>Live mainnet feeds</li>
+                  <li>Explorer-style intel UI</li>
+                  <li>Address &amp; tx summaries</li>
+                </ul>
+              </article>
+            </li>
+            <li class="roadmap-phase roadmap-phase--next">
+              <div class="roadmap-phase__head">
+                <span class="roadmap-phase__node" aria-hidden="true"><span class="roadmap-phase__node-core"></span></span>
+              </div>
+              <article class="roadmap-phase__card">
+                <div class="roadmap-phase__top">
+                  <span class="roadmap-phase__badge">v2</span>
+                  <span class="roadmap-phase__eta">Next</span>
+                </div>
+                <h3 class="roadmap-phase__title">Intelligence</h3>
+                <ul class="roadmap-phase__list">
+                  <li>Multi-agent AI core</li>
+                  <li>Wallet flow tracking</li>
+                  <li>Contract risk scoring</li>
+                </ul>
+              </article>
+            </li>
+            <li class="roadmap-phase roadmap-phase--future">
+              <div class="roadmap-phase__head">
+                <span class="roadmap-phase__node" aria-hidden="true"><span class="roadmap-phase__node-core"></span></span>
+              </div>
+              <article class="roadmap-phase__card">
+                <div class="roadmap-phase__top">
+                  <span class="roadmap-phase__badge">v3</span>
+                </div>
+                <h3 class="roadmap-phase__title">Alerts</h3>
+                <ul class="roadmap-phase__list">
+                  <li>Live alert engine</li>
+                  <li>MEV &amp; liquidity signals</li>
+                  <li>Custom watchlists</li>
+                </ul>
+              </article>
+            </li>
+            <li class="roadmap-phase roadmap-phase--future">
+              <div class="roadmap-phase__head">
+                <span class="roadmap-phase__node" aria-hidden="true"><span class="roadmap-phase__node-core"></span></span>
+              </div>
+              <article class="roadmap-phase__card">
+                <div class="roadmap-phase__top">
+                  <span class="roadmap-phase__badge">v4</span>
+                </div>
+                <h3 class="roadmap-phase__title">Scale</h3>
+                <ul class="roadmap-phase__list">
+                  <li>Public API &amp; webhooks</li>
+                  <li>Cross-chain expansion</li>
+                  <li>Team &amp; enterprise tools</li>
+                </ul>
+              </article>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- Capabilities -->
+    <section id="capabilities" class="section capabilities">
+      <div class="container split">
+        <div>
+          <header class="section-head">
+            <p class="section-tag">// capabilities</p>
+            <h2>Built for on-chain operators</h2>
+            <p class="section-desc">Everything you need to read Ethereum mainnet with AI-assisted clarity.</p>
+          </header>
+          <ol class="cap-list">
+            <li>
+              <span class="cap-num">01</span>
+              <div>
+                <strong>Wallet &amp; Flow Tracking</strong>
+                <span>Monitor wallet clusters, trace fund flows, and surface suspicious patterns across Ethereum mainnet in real time.</span>
+              </div>
+            </li>
+            <li>
+              <span class="cap-num">02</span>
+              <div>
+                <strong>Multi-Agent AI Analysis</strong>
+                <span>Parallel AI agents parse transactions, score contract risk, and merge signals into unified intelligence reports.</span>
+              </div>
+            </li>
+            <li>
+              <span class="cap-num">03</span>
+              <div>
+                <strong>Live Alerts &amp; Insights</strong>
+                <span>Get actionable alerts on MEV activity, liquidity shifts, and anomalous contract behavior before they escalate.</span>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <div class="terminal-panel">
+          <div class="terminal-bar">
+            <span></span><span></span><span></span>
+            <code>chaineye / terminal</code>
+          </div>
+          <div class="terminal-body">
+            <span class="t-prompt">chaineye@mainnet:~$</span> <span class="t-cmd">scan --wallet 0x7a3f…9c2e</span><br>
+            <span class="t-dim">[ingest]</span> <span class="t-ok">✓</span> wallet feed <span class="t-val">LIVE</span><br>
+            <span class="t-dim">[ingest]</span> <span class="t-ok">✓</span> tx feed <span class="t-val">LIVE</span><br>
+            <span class="t-dim">[ai-core]</span> parsing 847 transactions…<br>
+            <span class="t-dim">[ai-core]</span> risk score: <span class="t-accent">0.23</span> (low)<br>
+            <span class="t-insight">→ 3 linked wallets · 12 contract calls · 0 flags</span><br><br>
+            <span class="t-prompt">chaineye@mainnet:~$</span> <span class="t-cmd">alert --contract 0xdef…042</span><br>
+            <span class="t-dim">[scan]</span> bytecode analysis <span class="t-ok">complete</span><br>
+            <span class="t-dim">[risk]</span> honeypot probability: <span class="t-accent">94%</span><br>
+            <span class="t-insight">→ ALERT: high-risk contract detected</span><br><br>
+            <span class="t-prompt">chaineye@mainnet:~$</span> <span class="t-cursor">_</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tokenomics -->
+    <section id="tokenomics" class="section tokenomics">
+      <div class="container">
+        <div class="tokenomics-inner">
+          <div class="tokenomics-split">
+            <div class="tokenomics-col tokenomics-col--left">
+              <header class="tokenomics-head reveal">
+                <p class="section-tag">// tokenomics</p>
+                <h2>Chaineye AI <span class="tokenomics-ticker">$CAI</span></h2>
+              </header>
+              <dl class="tokenomics-grid reveal">
+                <div class="tokenomics-item">
+                  <dt>Total Supply</dt>
+                  <dd>1,000,000,000</dd>
+                </div>
+                <div class="tokenomics-item">
+                  <dt>Tax</dt>
+                  <dd>4 / 4</dd>
+                </div>
+                <div class="tokenomics-item">
+                  <dt>Initial LP</dt>
+                  <dd>1.5 ETH</dd>
+                </div>
+                <div class="tokenomics-item">
+                  <dt>LP Locked</dt>
+                  <dd>1 Year</dd>
+                </div>
+                <div class="tokenomics-item">
+                  <dt>Chain</dt>
+                  <dd>ETH</dd>
+                </div>
+                <div class="tokenomics-item">
+                  <dt>Ownership</dt>
+                  <dd class="tokenomics-highlight">Renounced</dd>
+                </div>
+              </dl>
+            </div>
+            <div class="tokenomics-col tokenomics-col--right reveal">
+              <h3 class="tokenomics-distro-title">Token Distribution</h3>
+              <ul class="tokenomics-distro-list">
+                <li class="tokenomics-distro-item">
+                  <div class="tokenomics-distro-head">
+                    <span>Liquidity Pool</span>
+                    <span>96%</span>
+                  </div>
+                  <div class="tokenomics-distro-bar" role="presentation"><span style="width: 96%"></span></div>
+                </li>
+                <li class="tokenomics-distro-item">
+                  <div class="tokenomics-distro-head">
+                    <span>Marketing</span>
+                    <span>2%</span>
+                  </div>
+                  <div class="tokenomics-distro-bar" role="presentation"><span style="width: 2%"></span></div>
+                </li>
+                <li class="tokenomics-distro-item">
+                  <div class="tokenomics-distro-head">
+                    <span>Team</span>
+                    <span>2%</span>
+                  </div>
+                  <div class="tokenomics-distro-bar" role="presentation"><span style="width: 2%"></span></div>
+                </li>
+              </ul>
+              <div class="tokenomics-ca-block">
+                <p class="tokenomics-ca-label">Contract Address</p>
+                <div class="tokenomics-ca-panel">
+                  <div class="tokenomics-ca-row">
+                    <code id="contract-address" class="tokenomics-ca" data-ca="0x0000000000000000000000000000000000000000">0x0000000000000000000000000000000000000000</code>
+                    <button type="button" id="copy-ca-btn" class="btn btn-ghost btn-sm btn-copy-ca">Copy CA</button>
+                  </div>
+                  <p id="copy-ca-note" class="tokenomics-ca-note"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <p class="footer-tagline">See Blockchain Smarter</p>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="#about">About</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#features">Features</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="#capabilities">Capabilities</a>
+        <a href="#tokenomics">Tokenomics</a>
+      </nav>
+      <div class="footer-social nav-social" aria-label="Social links">
+        <a href="https://t.me/ChaineyeAI" class="nav-social-link" target="_blank" rel="noopener noreferrer" aria-label="Telegram">
+          <svg class="nav-social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        </a>
+        <a href="https://x.com/ChaineyeAI" class="nav-social-link" target="_blank" rel="noopener noreferrer" aria-label="X">
+          <svg class="nav-social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+      </div>
+      <p class="footer-copy">&copy; <span id="year">2026</span> Chaineye AI. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/neuro.js?v=16"></script>
+  <script src="js/main.js?v=24" defer></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "chaineye-ai",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:explorer": "vite build",
+    "dev:explorer": "vite"
+  },
+  "dependencies": {
+    "@reown/appkit": "^1.8.19",
+    "@reown/appkit-adapter-ethers": "^1.8.19",
+    "ethers": "^6.13.5"
+  },
+  "devDependencies": {
+    "vite": "^6.2.0"
+  }
+}
