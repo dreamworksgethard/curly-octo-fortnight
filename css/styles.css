@@ -924,12 +924,11 @@ main, .site-header, .site-footer {
 }
 
 .about-wrap,
-.hiw-flow-panel,
-#how-it-works .container > .section-head,
-#features .container > *,
-#roadmap .container > *,
-#capabilities .container.split,
-.tokenomics-inner {
+#how-it-works > .container,
+#features > .container,
+#roadmap > .container,
+#capabilities > .container,
+#tokenomics > .container {
   width: 100%;
   max-width: var(--section-content-max);
   margin-inline: auto;
@@ -3613,12 +3612,11 @@ main, .site-header, .site-footer {
   }
 
   .about-wrap,
-  .hiw-flow-panel,
-  #how-it-works .container > .section-head,
-  #features .container > *,
-  #roadmap .container > *,
-  #capabilities .container.split,
-  .tokenomics-inner {
+  #how-it-works > .container,
+  #features > .container,
+  #roadmap > .container,
+  #capabilities > .container,
+  #tokenomics > .container {
     max-width: 100%;
   }
 
