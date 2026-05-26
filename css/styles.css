@@ -2246,6 +2246,7 @@ main, .site-header, .site-footer {
 }
 
 .tokenomics-ca-row,
+.tokenomics-ca-actions,
 .tokenomics-ca-note {
   position: relative;
   z-index: 1;
@@ -2257,6 +2258,13 @@ main, .site-header, .site-footer {
   align-items: center;
   justify-content: flex-start;
   gap: 0.6rem;
+}
+
+.tokenomics-ca-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.2rem;
 }
 
 .tokenomics-distro-title {
@@ -2349,6 +2357,12 @@ main, .site-header, .site-footer {
   background: rgba(0, 255, 136, 0.15);
   border-color: var(--green);
   color: var(--white);
+}
+
+.tokenomics-ca-action {
+  min-width: 8.65rem;
+  padding: 0.58rem 1.15rem;
+  font-size: 0.71rem;
 }
 
 .tokenomics-ca-note {
@@ -3691,6 +3705,14 @@ main, .site-header, .site-footer {
   .tokenomics-ca-panel .btn-copy-ca {
     width: 100%;
     min-width: 0;
+  }
+
+  .tokenomics-ca-actions {
+    flex-direction: column;
+  }
+
+  .tokenomics-ca-action {
+    width: 100%;
   }
 
   .footer-links {

@@ -48,7 +48,7 @@
           type="search"
           id="cex-search-input"
           class="cex-search-form__input"
-          placeholder="Address / Txn Hash / Block / Token"
+          placeholder="Wallet / Txn Signature / Block / Token"
           autocomplete="off"
           spellcheck="false"
         >
@@ -57,7 +57,7 @@
 
       <div class="cex-header__right">
         <div class="cex-ticker-stats" aria-label="Network stats">
-          <span>SOL <strong id="cex-eth-price">$2,131.42</strong> <em class="cex-up">+1.27%</em></span>
+          <span>SOL <strong id="cex-eth-price">$84.00</strong> <em class="cex-up">+1.27%</em></span>
           <span class="cex-stat-sep">·</span>
           <span>Fee <strong id="cex-gas">0.000005</strong> SOL</span>
           <span class="cex-stat-sep">·</span>
@@ -123,7 +123,7 @@
             <article class="cex-stat-card">
               <span class="cex-stat-card__label">Pending txs</span>
               <span class="cex-stat-card__value">142,891</span>
-              <span class="cex-stat-card__meta">Mempool estimate</span>
+              <span class="cex-stat-card__meta">Recent queue estimate</span>
             </article>
             <article class="cex-stat-card">
               <span class="cex-stat-card__label">AI scans (24h)</span>
@@ -150,8 +150,8 @@
                       <th>Block</th>
                       <th>Age</th>
                       <th>Txn</th>
-                      <th>Miner</th>
-                      <th>Gas</th>
+                      <th>Validator</th>
+                      <th>Compute</th>
                     </tr>
                   </thead>
                   <tbody id="dash-blocks-body"></tbody>
@@ -168,7 +168,7 @@
                 <table class="cex-table cex-table--tx">
                   <thead>
                     <tr>
-                      <th>Txn Hash</th>
+                      <th>Txn Signature</th>
                       <th>Method</th>
                       <th>Block</th>
                       <th>From</th>
@@ -205,7 +205,7 @@
               <div class="cex-address-hero__body">
                 <p class="cex-address-hero__type">Contract / Address</p>
                 <div class="cex-address-hero__hash-row">
-                  <h1 class="cex-address-hero__hash" id="cex-address-hash">0x4838Bdf1E78775f97…</h1>
+                  <h1 class="cex-address-hero__hash" id="cex-address-hash">HH3R5VRTHkT6GdcLj9osh…</h1>
                   <button type="button" class="cex-icon-action" id="cex-copy-address" title="Copy address">⎘</button>
                   <button type="button" class="cex-icon-action" title="Add to watchlist">★</button>
                 </div>
@@ -267,7 +267,7 @@
                   <thead>
                     <tr>
                       <th></th>
-                      <th>Txn Hash</th>
+                      <th>Txn Signature</th>
                       <th>Method</th>
                       <th>Block</th>
                       <th>Age</th>
@@ -299,7 +299,7 @@
                 </div>
                 <div class="cex-analytics-card">
                   <h4>MEV exposure</h4>
-                  <p>Moderate, 12% of outbound volume routed via builder relays.</p>
+                  <p>Moderate, 12% of outbound volume routed through priority fee paths.</p>
                 </div>
                 <div class="cex-analytics-card">
                   <h4>Contract interactions</h4>
@@ -328,8 +328,8 @@
                     <th>Age</th>
                     <th>Txn</th>
                     <th>Reward</th>
-                    <th>Miner</th>
-                    <th>Gas Used</th>
+                    <th>Validator</th>
+                    <th>Compute Used</th>
                   </tr>
                 </thead>
                 <tbody id="cex-blocks-body"></tbody>
@@ -353,7 +353,7 @@
                 <thead>
                   <tr>
                     <th></th>
-                    <th>Txn Hash</th>
+                    <th>Txn Signature</th>
                     <th>Method</th>
                     <th>Block</th>
                     <th>Age</th>
@@ -454,6 +454,6 @@
     </div>
   </div>
 
-  <script type="module" src="js/explorer.bundle.js?v=12"></script>
+  <script type="module" src="js/explorer.bundle.js?v=14"></script>
 </body>
 </html>
