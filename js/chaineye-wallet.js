@@ -1,8 +1,8 @@
 import { createAppKit } from "@reown/appkit";
 import { EthersAdapter } from "@reown/appkit-adapter-ethers";
-import { mainnet } from "@reown/appkit/networks";
+import { base } from "@reown/appkit/networks";
 
-const MAINNET_CHAIN_ID = mainnet.id;
+const MAINNET_CHAIN_ID = base.id;
 const MAINNET_HEX = `0x${MAINNET_CHAIN_ID.toString(16)}`;
 
 /** Public Reown project ID for local dev. Replace via data-reown-project-id or VITE_REOWN_PROJECT_ID */
@@ -33,7 +33,7 @@ function getMetadata() {
   const origin = typeof window !== "undefined" ? window.location.origin : "https://chaineye.ai";
   return {
     name: "Chaineye Explorer",
-    description: "AI-powered Ethereum mainnet explorer",
+    description: "AI-powered Base mainnet explorer",
     url: origin,
     icons: [`${origin}/assets/8895451221__1_-a8a9bc27-5248-459d-9b3f-004c9b5141ee.png`],
   };
@@ -102,8 +102,8 @@ export async function initChaineyeWallet(callbacks = {}) {
 
   appKit = createAppKit({
     adapters: [new EthersAdapter()],
-    networks: [mainnet],
-    defaultNetwork: mainnet,
+    networks: [base],
+    defaultNetwork: base,
     projectId: getProjectId(),
     metadata: getMetadata(),
     themeMode: "dark",

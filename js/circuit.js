@@ -283,7 +283,7 @@
 
     clearCascadeTimers();
     resetVisuals();
-    setLiveFeed("Scanning Ethereum mainnet · routing signals…");
+    setLiveFeed("Scanning Base mainnet · routing signals…");
 
     if (reducedMotion) {
       activationOrder.forEach((id) =>

@@ -93,8 +93,8 @@
   if (copyCaBtn && contractEl) {
     copyCaBtn.addEventListener("click", async () => {
       const address = (contractEl.dataset.ca || contractEl.textContent || "").trim();
-      if (!address || address.startsWith("0x0000000000000000000000000000")) {
-        if (copyCaNote) copyCaNote.textContent = "Contract address not set yet.";
+      if (!address || address.includes("TBA") || address.startsWith("0x0000000000000000000000000000")) {
+        if (copyCaNote) copyCaNote.textContent = "Contract address TBA.";
         return;
       }
       try {
@@ -112,4 +112,5 @@
       }
     });
   }
+
 })();

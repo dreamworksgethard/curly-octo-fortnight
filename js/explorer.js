@@ -7,8 +7,10 @@ import {
   getWalletState,
 } from "./chaineye-wallet.js";
 
-const DEFAULT_ADDRESS = "0x4838Bdf1E78775f97a8b2c3d4e5f6789012345678";
+const DEFAULT_ADDRESS = "0xB17163f4F991B2A34D2ef2a99eAB0d1165275862";
 const BASE_BLOCK = 21492847;
+const EVM_ADDRESS_RE = /^0x[a-fA-F0-9]{40}$/;
+const EVM_TX_HASH_RE = /^0x[a-fA-F0-9]{64}$/;
 
 const walletState = { address: null, chainId: null };
 let appStarted = false;
@@ -21,6 +23,10 @@ function shortAddress(addr) {
     if (!addr || addr.length < 10) return addr;
     return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
   }
+
+function normalizeExplorerWalletAddress(address) {
+  return EVM_ADDRESS_RE.test(address || "") ? address : DEFAULT_ADDRESS;
+}
 
   function setGateError(msg) {
     const el = $("#cex-gate-error");
@@ -87,13 +93,13 @@ function shortAddress(addr) {
 
 function applyWalletConnection(address, chainId) {
   const wasConnected = Boolean(walletState.address);
-  walletState.address = address;
+  walletState.address = normalizeExplorerWalletAddress(address);
   walletState.chainId = chainId;
   updateConnectButton();
 
   if (!isMainnetChain(chainId)) {
     lockExplorer();
-    setGateError("Wrong network. Switch to Ethereum Mainnet in your wallet.");
+    setGateError("Wrong network. Switch to Base Mainnet in your wallet.");
     if (!wasConnected) showToast("Wrong network, Mainnet required.");
     return;
   }
@@ -143,126 +149,126 @@ function requireWallet() {
 }
 
 const SAMPLE_TXS = [
-    { hash: "0x7a3f9c2e1b4d8f6a0e5c3b2a1f0e9d8c7b6a5f4e3d2c1b0a9f8e7d6c5b4a3f2e1", method: "transfer", block: BASE_BLOCK, age: "12 secs ago", from: "0x7a3f…9c2e", to: "0x4838…df12", value: "1.5 ETH", fee: "0.0021" },
-    { hash: "0x2b8e4f1a9c3d7e5b0f2a1d9c8e7b6a5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9", method: "swap", block: BASE_BLOCK - 1, age: "24 secs ago", from: "0x4838…df12", to: "Uniswap V3", value: "0 ETH", fee: "0.0048" },
-    { hash: "0x9f1e2d3c4b5a69788796a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4", method: "approve", block: BASE_BLOCK - 2, age: "36 secs ago", from: "0x4838…df12", to: "0xA0b8…eB48", value: "0 ETH", fee: "0.0019" },
-    { hash: "0x4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4", method: "deposit", block: BASE_BLOCK - 3, age: "48 secs ago", from: "Binance 15", to: "0x4838…df12", value: "12.0 ETH", fee: "0.0032" },
-    { hash: "0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2", method: "execute", block: BASE_BLOCK - 4, age: "1 min ago", from: "0x4838…df12", to: "Titan Builder", value: "0.08 ETH", fee: "0.0055" },
-    { hash: "0x8e7d6c5b4a3f2e1d0c9b8a7f6e5d4c3b2a1f0e9d8c7b6a5f4e3d2c1b0a9f8e7", method: "transfer", block: BASE_BLOCK - 5, age: "1 min ago", from: "0x4838…df12", to: "0x2B87…a91f", value: "0.5 ETH", fee: "0.0020" },
-    { hash: "0x3f2e1d0c9b8a7f6e5d4c3b2a1f0e9d8c7b6a5f4e3d2c1b0a9f8e7d6c5b4a3f2", method: "claim", block: BASE_BLOCK - 6, age: "2 mins ago", from: "0xFEE…Pool", to: "0x4838…df12", value: "0.12 ETH", fee: "0.0015" },
-    { hash: "0x6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5", method: "multicall", block: BASE_BLOCK - 7, age: "2 mins ago", from: "0x4838…df12", to: "0xDefi…Router", value: "0 ETH", fee: "0.0061" },
+    { hash: "0x8f3a2b1c9d4e5f60718293a4b5c6d7e8f901234567890abcdef1234567890abcd", method: "transfer", block: BASE_BLOCK, age: "12 secs ago", from: "0x742d…Mo7N", to: "0xB171…75862", value: "1.5 ETH", fee: "0.0021" },
+    { hash: "0x1a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f80", method: "swap", block: BASE_BLOCK - 1, age: "24 secs ago", from: "0xB171…75862", to: "Uniswap", value: "0 ETH", fee: "0.0048" },
+    { hash: "0x2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091", method: "approve", block: BASE_BLOCK - 2, age: "36 secs ago", from: "0xB171…75862", to: "0xWETH…0000", value: "0 ETH", fee: "0.0019" },
+    { hash: "0x3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2", method: "deposit", block: BASE_BLOCK - 3, age: "48 secs ago", from: "Coinbase Hot", to: "0xB171…75862", value: "12.0 ETH", fee: "0.0032" },
+    { hash: "0x4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3", method: "execute", block: BASE_BLOCK - 4, age: "1 min ago", from: "0xB171…75862", to: "Flashblocks", value: "0.08 ETH", fee: "0.0055" },
+    { hash: "0x5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4", method: "transfer", block: BASE_BLOCK - 5, age: "1 min ago", from: "0xB171…75862", to: "0x4Nd1…pQe2", value: "0.5 ETH", fee: "0.0020" },
+    { hash: "0x6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5", method: "claim", block: BASE_BLOCK - 6, age: "2 mins ago", from: "Aerodrome", to: "0xB171…75862", value: "0.12 ETH", fee: "0.0015" },
+    { hash: "0x708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6", method: "multicall", block: BASE_BLOCK - 7, age: "2 mins ago", from: "0xB171…75862", to: "Base Bridge", value: "0 ETH", fee: "0.0061" },
   ];
 
   const SAMPLE_BLOCKS = Array.from({ length: 12 }, (_, i) => ({
     num: BASE_BLOCK - i,
     age: i === 0 ? "12 secs ago" : `${12 + i * 12} secs ago`,
     txns: 142 + (i % 40),
-    miner: i % 3 === 0 ? "Titan Builder" : i % 3 === 1 ? "Beaverbuild" : "Flashbots",
+    miner: i % 3 === 0 ? "Coinbase" : i % 3 === 1 ? "Flashblocks" : "Sequencer",
     gas: `${(72 + i * 2).toFixed(1)}%`,
     reward: `${(0.012 + i * 0.001).toFixed(4)} ETH`,
   }));
 
   const INTEL_FEED = [
-    { type: "Flow", text: "Wallet cluster 0x7a3f… linked to 4 addresses, outbound spike +18%", time: "2s ago", level: "" },
-    { type: "Risk", text: "Contract 0xA0b8… proxy pattern detected, score 68", time: "14s ago", level: "warn" },
-    { type: "MEV", text: "Builder relay activity on Titan, 3 bundles in block", time: "28s ago", level: "" },
+    { type: "Flow", text: "Wallet cluster 0x742d…Mo7N linked to 4 addresses, outbound spike +18%", time: "2s ago", level: "" },
+    { type: "Risk", text: "Contract 0xB171…75862 upgrade detected, score 68", time: "14s ago", level: "warn" },
+    { type: "MEV", text: "Flashblocks bundle activity, 3 arb txs in block", time: "28s ago", level: "" },
     { type: "Alert", text: "Liquidity pool WETH/USDC, TVL drop 4.2% in 1h", time: "45s ago", level: "risk" },
-    { type: "Scan", text: "Address 0x4838… intel refresh, portfolio $29,294", time: "1m ago", level: "" },
-    { type: "Gas", text: "Network gas +12% vs 1h avg, congestion mild", time: "2m ago", level: "" },
+    { type: "Scan", text: "Address 0xB171…75862 intel refresh, portfolio $29,294", time: "1m ago", level: "" },
+    { type: "Fees", text: "Base gas +12% vs 1h avg, congestion mild", time: "2m ago", level: "" },
   ];
 
   const NEWS_FEED = [
     {
       id: "n1",
       type: "Transfer",
-      headline: "Whale wallet 0x7a3f…9c2e sent 5,000 ETH to Hyperliquid bridge",
+      headline: "Whale wallet 0x742d…Mo7N sent 120 ETH to Avantis",
       body: "Large deposit into perp venue, historically precedes directional positioning on ETH.",
       trade: { label: "Short bias", side: "short", detail: "ETH-PERP · watch funding" },
-      amount: "5,000 ETH",
+      amount: "120 ETH",
       time: "12s ago",
       level: "alert",
-      from: { id: "whale1", label: "Whale 0x7a3f", x: 95, y: 95 },
-      to: { id: "hyperliquid", label: "Hyperliquid", x: 655, y: 200 },
+      from: { id: "whale1", label: "Whale 742d", x: 95, y: 95 },
+      to: { id: "avantis", label: "Avantis", x: 655, y: 200 },
     },
     {
       id: "n2",
       type: "DEX Flow",
-      headline: "Smart money 0x4838…df12 swapped 820 ETH → USDC on Uniswap V3",
+      headline: "Smart money 0xB171…75862 swapped 18 ETH to USDC on Uniswap",
       body: "Risk-off rotation into stables after 48h accumulation. Consider defensive spot exposure.",
       trade: { label: "Watch", side: "watch", detail: "ETH spot · reduce longs" },
-      amount: "820 ETH",
+      amount: "18 ETH",
       time: "34s ago",
       level: "",
-      from: { id: "smart1", label: "0x4838…df12", x: 140, y: 300 },
-      to: { id: "uniswap", label: "Uniswap V3", x: 400, y: 120 },
+      from: { id: "smart1", label: "0xB171…75862", x: 140, y: 300 },
+      to: { id: "uniswap", label: "Uniswap", x: 400, y: 120 },
     },
     {
       id: "n3",
       type: "Bridge",
-      headline: "Fund 0x2B87…a91f bridged 1.2M USDC to Arbitrum via official bridge",
-      body: "Capital migration to L2, often front-runs ARB ecosystem token moves.",
-      trade: { label: "Long bias", side: "long", detail: "ARB ecosystem · 24–72h" },
+      headline: "Fund 0x4Nd1…pQe2 routed 1.2M USDC through Base Bridge",
+      body: "Capital rotation across Base venues, often front-runs ecosystem token moves.",
+      trade: { label: "Long bias", side: "long", detail: "Base ecosystem · 24–72h" },
       amount: "1.2M USDC",
       time: "1m ago",
       level: "",
-      from: { id: "fund1", label: "Fund 0x2B87", x: 120, y: 200 },
-      to: { id: "arb", label: "Arbitrum Bridge", x: 680, y: 320 },
+      from: { id: "fund1", label: "Fund 4Nd1", x: 120, y: 200 },
+      to: { id: "bridge", label: "Base Bridge", x: 680, y: 320 },
     },
     {
       id: "n4",
       type: "Liquidation",
-      headline: "Aave V3: 3 wallets liquidated for 240 WETH total",
+      headline: "Moonwell: 3 wallets liquidated for 12 WETH total",
       body: "Cascade risk elevated on ETH. Monitor health factors below 1.05 on large positions.",
       trade: { label: "Short bias", side: "short", detail: "ETH · vol expansion" },
-      amount: "240 WETH",
+      amount: "12 WETH",
       time: "2m ago",
       level: "risk",
-      from: { id: "aave", label: "Aave V3", x: 520, y: 85 },
+      from: { id: "moonwell", label: "Moonwell", x: 520, y: 85 },
       to: { id: "liq", label: "Liquidators", x: 700, y: 140 },
     },
     {
       id: "n5",
       type: "Stake",
-      headline: "Unknown wallet staked 12,400 ETH via Lido in single tx",
+      headline: "Unknown wallet staked 240 ETH via Aerodrome in single tx",
       body: "Supply shock to liquid staking, often neutral-short term, bullish medium term for ETH.",
       trade: { label: "Long bias", side: "long", detail: "ETH · 1–2 week hold" },
-      amount: "12,400 ETH",
+      amount: "240 ETH",
       time: "4m ago",
       level: "",
-      from: { id: "unknown", label: "0x9f1e…4c5d", x: 180, y: 140 },
-      to: { id: "lido", label: "Lido", x: 450, y: 280 },
+      from: { id: "unknown", label: "0x7n1W…e9Qk", x: 180, y: 140 },
+      to: { id: "aero", label: "Aerodrome", x: 450, y: 280 },
     },
     {
       id: "n6",
       type: "MEV",
-      headline: "Titan builder bundle: 890 ETH arb across Curve → Balancer",
-      body: "Depeg stress signal on stETH pool, possible mean-reversion trade if spread widens.",
-      trade: { label: "Watch", side: "watch", detail: "stETH/ETH spread" },
-      amount: "890 ETH",
+      headline: "Flashblocks bundle: 42 ETH arb across Aerodrome to Uniswap",
+      body: "Depeg stress signal on cbETH pool, possible mean-reversion trade if spread widens.",
+      trade: { label: "Watch", side: "watch", detail: "cbETH/ETH spread" },
+      amount: "42 ETH",
       time: "6m ago",
       level: "warn",
-      from: { id: "curve", label: "Curve", x: 300, y: 340 },
-      to: { id: "balancer", label: "Balancer", x: 580, y: 260 },
+      from: { id: "aero", label: "Aerodrome", x: 300, y: 340 },
+      to: { id: "uniswap", label: "Uniswap", x: 580, y: 260 },
     },
     {
       id: "n7",
       type: "Transfer",
-      headline: "Binance hot wallet 0xFEE…Pool withdrew 8,200 ETH to cold storage",
+      headline: "Coinbase hot wallet withdrew 820 ETH to cold storage",
       body: "Exchange outflow, historically correlated with reduced sell pressure over 7d.",
       trade: { label: "Long bias", side: "long", detail: "ETH spot" },
-      amount: "8,200 ETH",
+      amount: "820 ETH",
       time: "9m ago",
       level: "",
-      from: { id: "binance", label: "Binance 15", x: 400, y: 360 },
+      from: { id: "coinbase", label: "Coinbase 15", x: 400, y: 360 },
       to: { id: "cold", label: "Cold storage", x: 620, y: 90 },
     },
     {
       id: "n8",
       type: "Contract",
-      headline: "New proxy deployed 0xA0b8…eB48, funded with 450 ETH from Tornado cash mixer path",
-      body: "High-risk deployment pattern. Avoid interaction until bytecode audit completes.",
+      headline: "New contract 0xB171…75862 funded with 12 ETH from high-risk routing path",
+      body: "High-risk deployment pattern. Avoid interaction until contract analysis completes.",
       trade: { label: "Avoid", side: "watch", detail: "Do not interact" },
-      amount: "450 ETH",
+      amount: "12 ETH",
       time: "11m ago",
       level: "risk",
       from: { id: "mixer", label: "Mixer path", x: 90, y: 250 },
@@ -298,15 +304,15 @@ const SAMPLE_TXS = [
 
   function shortHash(h, start = 6, end = 4) {
     if (!h || h.length < 12) return h;
-    return `${h.slice(0, 2 + start)}…${h.slice(-end)}`;
+    return `${h.slice(0, start)}…${h.slice(-end)}`;
   }
 
   function isAddress(q) {
-    return /^0x[a-fA-F0-9]{40}$/.test(q);
+    return EVM_ADDRESS_RE.test(q);
   }
 
   function isTxHash(q) {
-    return /^0x[a-fA-F0-9]{64}$/.test(q);
+    return EVM_TX_HASH_RE.test(q);
   }
 
   function isBlock(q) {
@@ -527,7 +533,7 @@ const SAMPLE_TXS = [
   }
 
   function loadAddress(addr) {
-    const full = addr.startsWith("0x") ? addr : `0x${addr}`;
+    const full = addr;
     const display = full.length > 20 ? `${full.slice(0, 6)}…${full.slice(-8)}` : full;
     const hashEl = $("#cex-address-hash");
     const icon = $("#cex-identicon");
@@ -595,7 +601,7 @@ const SAMPLE_TXS = [
             <div class="cex-detail-row"><dt>Height</dt><dd class="cex-mono">${n.toLocaleString()}</dd></div>
             <div class="cex-detail-row"><dt>Age</dt><dd>${b.age}</dd></div>
             <div class="cex-detail-row"><dt>Transactions</dt><dd class="cex-mono">${b.txns}</dd></div>
-            <div class="cex-detail-row"><dt>Miner</dt><dd><a href="#" class="cex-link">${b.miner}</a></dd></div>
+            <div class="cex-detail-row"><dt>Sequencer</dt><dd><a href="#" class="cex-link">${b.miner}</a></dd></div>
           </dl>
         </article>
         <article class="cex-detail-card">
@@ -603,7 +609,7 @@ const SAMPLE_TXS = [
           <dl>
             <div class="cex-detail-row"><dt>Gas used</dt><dd>${b.gas}</dd></div>
             <div class="cex-detail-row"><dt>Reward</dt><dd class="cex-mono">${b.reward}</dd></div>
-            <div class="cex-detail-row"><dt>Base fee</dt><dd class="cex-mono">0.28 Gwei</dd></div>
+            <div class="cex-detail-row"><dt>Base fee</dt><dd class="cex-mono">0.42 gwei</dd></div>
           </dl>
         </article>`;
     }
@@ -664,13 +670,11 @@ const SAMPLE_TXS = [
       location.hash = `#/block/${q}`;
       return;
     }
-    if (q.startsWith("0x") && q.length > 10) {
-      const padded = q.padEnd(42, "0").slice(0, 42);
-      location.hash = `#/address/${padded}`;
-      showToast("Partial address normalized.");
+    if (EVM_ADDRESS_RE.test(q) || EVM_TX_HASH_RE.test(q)) {
+      location.hash = `#/address/${q}`;
       return;
     }
-    showToast("Enter a valid address (0x…40), txn hash (0x…64), or block number.");
+    showToast("Enter a valid Base wallet, transaction hash, or block number.");
   }
 
   function startExplorerApp() {
@@ -802,7 +806,7 @@ async function bootstrap() {
       walletState.chainId = chainId;
       if (walletState.address && !isMainnet) {
         lockExplorer();
-        setGateError("Wrong network. Switch to Ethereum Mainnet to access the explorer.");
+        setGateError("Wrong network. Switch to Base Mainnet to access the explorer.");
         showToast("Wrong network, Mainnet required.");
       } else if (walletState.address && isMainnet) {
         setGateError("");
