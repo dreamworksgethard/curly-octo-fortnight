@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chaineye Explorer, Solana intelligence</title>
-  <meta name="description" content="Chaineye Explorer, AI-powered Solana mainnet explorer with wallet intel, risk scoring, and live on-chain data.">
+  <title>Chaineye Explorer, BSC intelligence</title>
+  <meta name="description" content="Chaineye Explorer, AI-powered BSC mainnet explorer with wallet intel, risk scoring, and live on-chain data.">
   <link rel="icon" type="image/png" href="assets/8895451221__1_-a8a9bc27-5248-459d-9b3f-004c9b5141ee.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,7 +20,7 @@
       <img src="assets/8895451221__1_-a8a9bc27-5248-459d-9b3f-004c9b5141ee.png" alt="" width="56" height="56" class="cex-wallet-gate__logo">
       <p class="cex-wallet-gate__tag">// access required</p>
       <h2 id="cex-wallet-gate-title">Connect your wallet</h2>
-      <p class="cex-wallet-gate__desc">Chaineye Explorer requires a Solana wallet on <strong>Mainnet</strong> before you can search addresses, view intel, and use the platform.</p>
+      <p class="cex-wallet-gate__desc">Chaineye Explorer requires a BSC wallet on <strong>Mainnet</strong> before you can search addresses, view intel, and use the platform.</p>
       <button type="button" class="cex-btn cex-wallet-gate__btn" id="cex-gate-connect">Connect Wallet</button>
       <p class="cex-wallet-gate__error" id="cex-gate-error" hidden></p>
       <a href="index.html" class="cex-wallet-gate__back">← Back to site</a>
@@ -37,7 +37,7 @@
         </a>
         <span class="cex-network">
           <span class="cex-pulse" aria-hidden="true"></span>
-          Solana Mainnet
+          BSC Mainnet
         </span>
       </div>
 
@@ -48,7 +48,7 @@
           type="search"
           id="cex-search-input"
           class="cex-search-form__input"
-          placeholder="Wallet / Txn Signature / Block / Token"
+          placeholder="Address / Txn Hash / Block / Token"
           autocomplete="off"
           spellcheck="false"
         >
@@ -57,9 +57,9 @@
 
       <div class="cex-header__right">
         <div class="cex-ticker-stats" aria-label="Network stats">
-          <span>SOL <strong id="cex-eth-price">$84.00</strong> <em class="cex-up">+1.27%</em></span>
+          <span>BNB <strong id="cex-eth-price">$612.00</strong> <em class="cex-up">+1.27%</em></span>
           <span class="cex-stat-sep">·</span>
-          <span>Fee <strong id="cex-gas">0.000005</strong> SOL</span>
+          <span>Gas <strong id="cex-gas">3</strong> gwei</span>
           <span class="cex-stat-sep">·</span>
           <span>Block <strong id="cex-head-block">21,492,847</strong></span>
         </div>
@@ -90,7 +90,7 @@
         </nav>
         <div class="cex-sidebar__foot">
           <p class="cex-wallet-badge" id="cex-wallet-status"><span class="cex-pulse"></span> Wallet required</p>
-          <p class="cex-sidebar__note">Connect your Solana Mainnet wallet to use the explorer.</p>
+          <p class="cex-sidebar__note">Connect your BSC Mainnet wallet to use the explorer.</p>
           <div class="cex-sidebar-social nav-social" aria-label="Social links">
             <a href="https://x.com/ChaineyeAI" class="nav-social-link" target="_blank" rel="noopener noreferrer" aria-label="X">
               <svg class="nav-social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
@@ -151,7 +151,7 @@
                       <th>Age</th>
                       <th>Txn</th>
                       <th>Validator</th>
-                      <th>Compute</th>
+                      <th>Gas</th>
                     </tr>
                   </thead>
                   <tbody id="dash-blocks-body"></tbody>
@@ -168,7 +168,7 @@
                 <table class="cex-table cex-table--tx">
                   <thead>
                     <tr>
-                      <th>Txn Signature</th>
+                      <th>Txn Hash</th>
                       <th>Method</th>
                       <th>Block</th>
                       <th>From</th>
@@ -205,7 +205,7 @@
               <div class="cex-address-hero__body">
                 <p class="cex-address-hero__type">Contract / Address</p>
                 <div class="cex-address-hero__hash-row">
-                  <h1 class="cex-address-hero__hash" id="cex-address-hash">HH3R5VRTHkT6GdcLj9osh…</h1>
+                  <h1 class="cex-address-hero__hash" id="cex-address-hash">0xB17163f4F991B2A34D2ef2a99eAB0d1165275862</h1>
                   <button type="button" class="cex-icon-action" id="cex-copy-address" title="Copy address">⎘</button>
                   <button type="button" class="cex-icon-action" title="Add to watchlist">★</button>
                 </div>
@@ -228,8 +228,8 @@
             <article class="cex-info-card">
               <h3>Overview</h3>
               <dl class="cex-kv">
-                <div><dt>SOL Balance</dt><dd class="cex-mono" id="cex-balance-eth">8.07 SOL</dd></div>
-                <div><dt>SOL Value</dt><dd id="cex-balance-usd">$678 <span class="cex-muted">USD</span></dd></div>
+                <div><dt>BNB Balance</dt><dd class="cex-mono" id="cex-balance-eth">8.07 BNB</dd></div>
+                <div><dt>BNB Value</dt><dd id="cex-balance-usd">$4,939 <span class="cex-muted">USD</span></dd></div>
                 <div><dt>Token Holdings</dt><dd><span class="cex-pill">24 tokens</span> <span class="cex-muted">· $12,112</span></dd></div>
               </dl>
             </article>
@@ -267,7 +267,7 @@
                   <thead>
                     <tr>
                       <th></th>
-                      <th>Txn Signature</th>
+                      <th>Txn Hash</th>
                       <th>Method</th>
                       <th>Block</th>
                       <th>Age</th>
@@ -287,7 +287,7 @@
             <div class="cex-tab-panel" data-panel="tokens" hidden>
               <div class="cex-token-list">
                 <div class="cex-token-row"><span class="cex-token-sym">USDC</span><span class="cex-mono">142,891.22</span><span class="cex-muted">$142,891</span></div>
-                <div class="cex-token-row"><span class="cex-token-sym">WSOL</span><span class="cex-mono">2.41</span><span class="cex-muted">$203</span></div>
+                <div class="cex-token-row"><span class="cex-token-sym">WBNB</span><span class="cex-mono">2.41</span><span class="cex-muted">$1,475</span></div>
                 <div class="cex-token-row"><span class="cex-token-sym">LINK</span><span class="cex-mono">890.0</span><span class="cex-muted">$12,840</span></div>
               </div>
             </div>
@@ -316,7 +316,7 @@
             <div>
               <p class="cex-page-tag">// blocks</p>
               <h1>Block explorer</h1>
-              <p class="cex-page-desc">Recent Solana mainnet blocks.</p>
+              <p class="cex-page-desc">Recent BSC mainnet blocks.</p>
             </div>
           </header>
           <div class="cex-panel">
@@ -329,7 +329,7 @@
                     <th>Txn</th>
                     <th>Reward</th>
                     <th>Validator</th>
-                    <th>Compute Used</th>
+                    <th>Gas Used</th>
                   </tr>
                 </thead>
                 <tbody id="cex-blocks-body"></tbody>
@@ -389,7 +389,7 @@
                 <svg class="cex-news-map" id="cex-news-map" viewBox="0 0 800 420" preserveAspectRatio="xMidYMid meet"></svg>
                 <div class="cex-news-map__hub" aria-hidden="true">
                   <span class="cex-news-map__hub-dot"></span>
-                  <span class="cex-news-map__hub-label">Solana Mainnet</span>
+                  <span class="cex-news-map__hub-label">BSC Mainnet</span>
                 </div>
               </div>
               <p class="cex-news-map__hint" id="cex-news-map-hint">Select a headline to highlight the route on the map.</p>
@@ -454,6 +454,6 @@
     </div>
   </div>
 
-  <script type="module" src="js/explorer.bundle.js?v=16"></script>
+  <script type="module" src="js/explorer.bundle.js?v=17"></script>
 </body>
 </html>
